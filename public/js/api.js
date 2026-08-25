@@ -1,0 +1,81 @@
+// api.js - tiny fetch wrapper shared by every page.
+// Stores the JWT + user object in memory-safe localStorage (fine for a
+// college demo project running on localhost).
+
+const API_BASE = '/api';
+
+function getToken() {
+  return localStorage.getItem('cf_token');
+}
+function getUser() {
+  const raw = localStorage.getItem('cf_user');
+  return raw ? JSON.parse(raw) : null;
+}
+function setSession(token, user) {
+  localStorage.setItem('cf_token', token);
+  localStorage.setItem('cf_user', JSON.stringify(user));
+}
+function clearSession() {
+  localStorage.removeItem('cf_token');
+  localStorage.removeItem('cf_user');
+}
+
+// Redirects to the login page unless the user is logged in and, if a role
+// is given, has that exact role. Call at the top of every protected page.
+function guard(requiredRole) {
+  const user = getUser();
+  if (!user || !getToken()) {
+    window.location.href = '/index.html';
+    return null;
+  }
+  if (requiredRole && user.role !== requiredRole) {
+    window.location.href = `/${user.role}/dashboard.html`;
+    return null;
+  }
+  return user;
+}
+
+function logout() {
+  clearSession();
+  window.location.href = '/index.html';
+}
+
+// Generic JSON request helper
+async function api(path, { method = 'GET', body = null, isForm = false } = {}) {
+  const headers = {};
+  const token = getToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (!isForm) headers['Content-Type'] = 'application/json';
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    method,
+    headers,
+    body: body ? (isForm ? body : JSON.stringify(body)) : undefined
+  });
+
+  let data = {};
+  try { data = await res.json(); } catch (e) { /* no body */ }
+
+  if (!res.ok) {
+    throw new Error(data.error || `Request failed (${res.status})`);
+  }
+  return data;
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso.replace(' ', 'T') + 'Z');
+  return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+// simple, readable ticket-number formatter — CF-0001, CF-0002, ...
+function fmtTicketId(id) {
+  return `CF-${String(id).padStart(4, '0')}`;
+}
+
+function showMsg(el, message, isError = true) {
+  el.textContent = message;
+  el.style.display = message ? 'block' : 'none';
+  el.className = isError ? 'error-msg' : 'success-msg';
+  if (message) el.style.display = 'block';
+}

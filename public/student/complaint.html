@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CampusFix — Track Complaint</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/student/dashboard.html">
+        <div class="brand-mark">CF</div>
+        CampusFix <small>&nbsp;STUDENT DESK</small>
+      </a>
+      <div class="topbar-right">
+        <span class="role-pill" id="userName"></span>
+        <button class="btn secondary small" onclick="logout()">Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <p style="margin-top:20px;"><a href="/student/dashboard.html">&larr; Back to my complaints</a></p>
+    <div id="content">Loading…</div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const user = guard('student');
+    document.getElementById('userName').textContent = user.name;
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const content = document.getElementById('content');
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s || '';
+      return d.innerHTML;
+    }
+
+    // Simple status timeline for the "track" view
+    const STEPS = ['Pending', 'Assigned', 'In Progress', 'Resolved'];
+
+    async function load() {
+      try {
+        const { complaint: c, feedback } = await api(`/student/complaints/${id}`);
+        const statusClass = c.status.replace(' ', '-');
+        const currentStep = STEPS.indexOf(c.status);
+
+        content.innerHTML = `
+          <div class="card">
+            <div class="ticket-top">
+              <div>
+                <div class="ticket-id">${fmtTicketId(c.id)} · ${c.category}</div>
+                <h2>${escapeHtml(c.title)}</h2>
+              </div>
+              <div class="stamp ${statusClass}">${c.status}</div>
+            </div>
+            <p class="ticket-desc">${escapeHtml(c.description)}</p>
+
+            <div class="ticket-meta">
+              <span>📍 ${escapeHtml(c.location)}</span>
+              <span class="tag ${c.priority}">${c.priority} priority</span>
+              <span>Filed ${fmtDate(c.created_at)}</span>
+              ${c.staff_name ? `<span>👷 Assigned to ${escapeHtml(c.staff_name)}</span>` : ''}
+            </div>
+
+            ${c.image_path ? `<img class="ticket-image" src="${c.image_path}" alt="Complaint photo" />` : ''}
+
+            <div style="margin-top:20px; display:flex; gap:6px;">
+              ${STEPS.map((s, i) => `
+                <div style="flex:1; text-align:center;">
+                  <div style="height:6px; border-radius:4px; background:${i <= currentStep ? 'var(--primary)' : 'var(--line)'}; margin-bottom:6px;"></div>
+                  <div style="font-size:11px; color:${i <= currentStep ? 'var(--ink)' : 'var(--muted)'};">${s}</div>
+                </div>
+              `).join('')}
+            </div>
+
+            ${c.resolution_note ? `
+              <div style="margin-top:18px; background: var(--bg); border-radius: var(--radius-sm); padding: 12px;">
+                <strong style="font-size:12.5px; color: var(--success);">Resolution note</strong>
+                <p style="margin:6px 0 0; font-size:13.5px;">${escapeHtml(c.resolution_note)}</p>
+              </div>
+            ` : ''}
+          </div>
+
+          ${c.status === 'Resolved' ? renderFeedbackSection(feedback) : ''}
+        `;
+
+        if (c.status === 'Resolved') wireFeedbackForm(feedback);
+      } catch (err) {
+        content.innerHTML = `<div class="error-msg" style="display:block;">${err.message}</div>`;
+      }
+    }
+
+    function renderFeedbackSection(feedback) {
+      if (feedback) {
+        return `
+          <div class="card" style="margin-top:16px;">
+            <div class="panel-title">Your feedback</div>
+            <div style="font-size:20px;">${'★'.repeat(feedback.rating)}${'☆'.repeat(5 - feedback.rating)}</div>
+            ${feedback.comment ? `<p style="margin-top:8px; font-size:13.5px;">${escapeHtml(feedback.comment)}</p>` : ''}
+          </div>
+        `;
+      }
+      return `
+        <div class="card" style="margin-top:16px;">
+          <div class="panel-title">Rate this resolution</div>
+          <div id="fbMsg" class="error-msg"></div>
+          <div class="star-input" id="stars">
+            <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+          </div>
+          <label for="comment">Comment (optional)</label>
+          <textarea id="comment" placeholder="How was it handled?"></textarea>
+          <button class="btn" id="fbSubmit" style="margin-top:14px;" disabled>Submit feedback</button>
+        </div>
+      `;
+    }
+
+    function wireFeedbackForm(feedback) {
+      if (feedback) return;
+      let rating = 0;
+      const stars = document.querySelectorAll('#stars span');
+      const submitBtn = document.getElementById('fbSubmit');
+
+      stars.forEach(star => {
+        star.addEventListener('click', () => {
+          rating = parseInt(star.dataset.v, 10);
+          stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.v, 10) <= rating));
+          submitBtn.disabled = false;
+        });
+      });
+
+      submitBtn.addEventListener('click', async () => {
+        const fbMsg = document.getElementById('fbMsg');
+        try {
+          await api(`/student/complaints/${id}/feedback`, {
+            method: 'POST',
+            body: { rating, comment: document.getElementById('comment').value.trim() }
+          });
+          load();
+        } catch (err) {
+          showMsg(fbMsg, err.message);
+        }
+      });
+    }
+
+    load();
+  </script>
+</body>
+</html>

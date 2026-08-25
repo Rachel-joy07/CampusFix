@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CampusFix — Notifications</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/student/dashboard.html">
+        <div class="brand-mark">CF</div>
+        CampusFix <small>&nbsp;STUDENT DESK</small>
+      </a>
+      <div class="topbar-right">
+        <span class="role-pill" id="userName"></span>
+        <button class="btn secondary small" onclick="logout()">Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <a href="/student/dashboard.html">My Complaints</a>
+      <a href="/student/submit.html">Submit Complaint</a>
+      <a href="/student/notifications.html" class="active">Notifications</a>
+    </div>
+
+    <div class="card">
+      <div class="panel-title">Notifications</div>
+      <div id="list">Loading…</div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const user = guard('student');
+    document.getElementById('userName').textContent = user.name;
+
+    async function load() {
+      const list = document.getElementById('list');
+      try {
+        const { notifications } = await api('/student/notifications');
+        if (notifications.length === 0) {
+          list.innerHTML = `<div class="empty">No notifications yet.</div>`;
+          return;
+        }
+        list.innerHTML = notifications.map(n => `
+          <div class="notif-item">
+            ${n.is_read ? '' : '<span class="notif-dot"></span> '}${escapeHtml(n.message)}
+            <div class="notif-time">${fmtDate(n.created_at)}</div>
+          </div>
+        `).join('');
+
+        notifications.filter(n => !n.is_read).forEach(n => {
+          api(`/student/notifications/${n.id}/read`, { method: 'PATCH' }).catch(() => {});
+        });
+      } catch (err) {
+        list.innerHTML = `<div class="error-msg" style="display:block;">${err.message}</div>`;
+      }
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s || '';
+      return d.innerHTML;
+    }
+
+    load();
+  </script>
+</body>
+</html>

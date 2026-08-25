@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CampusFix — Register</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="brand-mark">CF</div>
+        <h1 style="font-size:20px;">Create account</h1>
+      </div>
+      <div class="auth-sub">Student sign-up — for reporting campus issues.</div>
+
+      <div id="msg" class="error-msg"></div>
+
+      <form id="regForm">
+        <label for="name">Full name</label>
+        <input type="text" id="name" required placeholder="Jane Doe" />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="you@campusfix.edu" />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" required minlength="6" placeholder="At least 6 characters" />
+
+        <button type="submit" class="btn full" style="margin-top:20px;">Create account</button>
+      </form>
+
+      <div class="auth-switch">
+        Already have an account? <a href="/index.html">Log in</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const form = document.getElementById('regForm');
+    const msg = document.getElementById('msg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showMsg(msg, '');
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        const { token, user } = await api('/auth/register', { method: 'POST', body: { name, email, password } });
+        setSession(token, user);
+        window.location.href = `/${user.role}/dashboard.html`;
+      } catch (err) {
+        showMsg(msg, err.message);
+      }
+    });
+  </script>
+</body>
+</html>

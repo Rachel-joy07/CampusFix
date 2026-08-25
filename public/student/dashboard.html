@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CampusFix — My Complaints</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/student/dashboard.html">
+        <div class="brand-mark">CF</div>
+        CampusFix <small>&nbsp;STUDENT DESK</small>
+      </a>
+      <div class="topbar-right">
+        <span class="role-pill" id="userName"></span>
+        <button class="btn secondary small" onclick="logout()">Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <a href="/student/dashboard.html" class="active">My Complaints</a>
+      <a href="/student/submit.html">Submit Complaint</a>
+      <a href="/student/notifications.html">Notifications <span id="notifDot"></span></a>
+    </div>
+
+    <div class="panel-title" style="margin-bottom:14px;">
+      <span>Complaint history</span>
+      <a href="/student/submit.html" class="btn accent small">+ New complaint</a>
+    </div>
+
+    <div id="list">Loading…</div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const user = guard('student');
+    document.getElementById('userName').textContent = user.name;
+
+    async function load() {
+      const listEl = document.getElementById('list');
+      try {
+        const { complaints } = await api('/student/complaints');
+        if (complaints.length === 0) {
+          listEl.innerHTML = `<div class="card empty">No complaints yet. <a href="/student/submit.html">Submit your first one →</a></div>`;
+          return;
+        }
+        listEl.innerHTML = complaints.map(renderTicket).join('');
+      } catch (err) {
+        listEl.innerHTML = `<div class="error-msg" style="display:block;">${err.message}</div>`;
+      }
+
+      try {
+        const { notifications } = await api('/student/notifications');
+        const unread = notifications.filter(n => !n.is_read).length;
+        document.getElementById('notifDot').innerHTML = unread ? '<span class="notif-dot"></span>' : '';
+      } catch (e) { /* ignore */ }
+    }
+
+    function renderTicket(c) {
+      const statusClass = c.status.replace(' ', '-');
+      return `
+        <a href="/student/complaint.html?id=${c.id}" style="text-decoration:none; color:inherit;">
+          <div class="ticket priority-${c.priority}">
+            <div class="ticket-top">
+              <div>
+                <div class="ticket-id">${fmtTicketId(c.id)} · ${c.category}</div>
+                <div class="ticket-title">${escapeHtml(c.title)}</div>
+              </div>
+              <div class="stamp ${statusClass}">${c.status}</div>
+            </div>
+            <div class="ticket-desc">${escapeHtml(c.description)}</div>
+            <div class="ticket-meta">
+              <span>📍 ${escapeHtml(c.location)}</span>
+              <span class="tag ${c.priority}">${c.priority}</span>
+              ${c.staff_name ? `<span>👷 ${escapeHtml(c.staff_name)}</span>` : ''}
+              <span>${fmtDate(c.created_at)}</span>
+            </div>
+          </div>
+        </a>
+      `;
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s || '';
+      return d.innerHTML;
+    }
+
+    load();
+  </script>
+</body>
+</html>

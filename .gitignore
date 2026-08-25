@@ -1,0 +1,7 @@
+node_modules/
+campusfix.db
+campusfix.db-shm
+campusfix.db-wal
+uploads/*
+!uploads/.gitkeep
+.env
