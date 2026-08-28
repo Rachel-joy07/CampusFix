@@ -131,11 +131,7 @@
             </div>
             <div>
               <label>Priority</label>
-              <select class="priority-select" data-id="${c.id}">
-                <option ${c.priority === 'Low' ? 'selected' : ''}>Low</option>
-                <option ${c.priority === 'Medium' ? 'selected' : ''}>Medium</option>
-                <option ${c.priority === 'High' ? 'selected' : ''}>High</option>
-              </select>
+              <div style="margin-top: 8px;"><span class="stamp">${c.priority}</span></div>
             </div>
           </div>
           ${c.resolution_note ? `<div style="margin-top:10px; font-size:12.5px; color:var(--success);"><strong>Resolved:</strong> ${escapeHtml(c.resolution_note)}</div>` : ''}
@@ -147,19 +143,9 @@
       document.querySelectorAll('.assign-select').forEach(sel => {
         sel.addEventListener('change', async () => {
           const id = sel.dataset.id;
-          if (!sel.value) return;
+          const staff_id = sel.value ? Number(sel.value) : null;
           try {
-            await api(`/admin/complaints/${id}/assign`, { method: 'PATCH', body: { staff_id: Number(sel.value) } });
-            loadList();
-            loadStats();
-          } catch (err) { alert(err.message); }
-        });
-      });
-      document.querySelectorAll('.priority-select').forEach(sel => {
-        sel.addEventListener('change', async () => {
-          const id = sel.dataset.id;
-          try {
-            await api(`/admin/complaints/${id}/priority`, { method: 'PATCH', body: { priority: sel.value } });
+            await api(`/admin/complaints/${id}/assign`, { method: 'PATCH', body: { staff_id } });
             loadList();
             loadStats();
           } catch (err) { alert(err.message); }

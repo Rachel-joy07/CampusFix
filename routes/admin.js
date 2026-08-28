@@ -50,6 +50,13 @@ router.patch('/complaints/:id/assign', (req, res) => {
   const complaint = db.prepare('SELECT * FROM complaints WHERE id = ?').get(req.params.id);
   if (!complaint) return res.status(404).json({ error: 'Complaint not found.' });
 
+  if (!staff_id) {
+    db.prepare(
+      "UPDATE complaints SET assigned_to = NULL, status = 'Pending', resolution_note = NULL, updated_at = datetime('now') WHERE id = ?"
+    ).run(req.params.id);
+    return res.json({ message: 'Complaint unassigned.' });
+  }
+
   const staff = db.prepare("SELECT * FROM users WHERE id = ? AND role = 'staff'").get(staff_id);
   if (!staff) return res.status(400).json({ error: 'Invalid staff member.' });
 
@@ -63,21 +70,7 @@ router.patch('/complaints/:id/assign', (req, res) => {
   res.json({ message: 'Complaint assigned.' });
 });
 
-// PATCH /api/admin/complaints/:id/priority - change priority
-router.patch('/complaints/:id/priority', (req, res) => {
-  const { priority } = req.body;
-  if (!['Low', 'Medium', 'High'].includes(priority)) {
-    return res.status(400).json({ error: 'Priority must be Low, Medium or High.' });
-  }
-  const complaint = db.prepare('SELECT * FROM complaints WHERE id = ?').get(req.params.id);
-  if (!complaint) return res.status(404).json({ error: 'Complaint not found.' });
-
-  db.prepare("UPDATE complaints SET priority = ?, updated_at = datetime('now') WHERE id = ?").run(
-    priority,
-    req.params.id
-  );
-  res.json({ message: 'Priority updated.' });
-});
+// Priority cannot be changed after submission
 
 // GET /api/admin/stats - dashboard statistics
 router.get('/stats', (req, res) => {

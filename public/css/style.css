@@ -133,6 +133,12 @@ a { color: var(--primary); }
   font-size: 13.5px;
   padding: 10px 14px;
   border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+.tabs a:hover {
+  color: var(--primary-dark);
+  background: rgba(0,0,0,0.03);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
 .tabs a.active { color: var(--primary-dark); border-bottom-color: var(--accent); }
 
@@ -163,6 +169,12 @@ a { color: var(--primary); }
   padding: 16px 18px;
   margin-bottom: 12px;
   position: relative;
+  transition: all 0.2s ease;
+}
+.ticket:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(27,36,48,0.12);
+  border-color: var(--primary);
 }
 .ticket.priority-High { border-left-color: var(--danger); }
 .ticket.priority-Medium { border-left-color: var(--accent); }
@@ -243,6 +255,10 @@ input:focus, select:focus, textarea:focus {
   outline-offset: 1px;
   border-color: var(--primary);
 }
+input[type="password"]::placeholder {
+  color: var(--muted);
+  opacity: 0.5;
+}
 textarea { resize: vertical; min-height: 80px; }
 
 .btn {
@@ -259,13 +275,16 @@ textarea { resize: vertical; min-height: 80px; }
   color: #fff;
   cursor: pointer;
   text-decoration: none;
+  transition: all 0.2s ease;
 }
-.btn:hover { background: var(--primary-dark); }
-.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); filter: brightness(1.05); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; filter: none; }
 .btn.secondary { background: #fff; color: var(--primary); border-color: var(--line); }
-.btn.secondary:hover { border-color: var(--primary); }
+.btn.secondary:hover { background: var(--bg); border-color: var(--primary); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .btn.accent { background: var(--accent); color: var(--accent-ink); }
+.btn.accent:hover { filter: brightness(1.15); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(232, 163, 61, 0.4); }
 .btn.danger { background: var(--danger); }
+.btn.danger:hover { filter: brightness(1.15); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(193, 68, 60, 0.4); }
 .btn.small { padding: 6px 11px; font-size: 12.5px; }
 .btn.full { width: 100%; justify-content: center; }
 

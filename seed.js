@@ -20,8 +20,10 @@ function upsertUser(name, email, password, role) {
 console.log('Seeding CampusFix database...\n');
 
 const adminId = upsertUser('Campus Admin', 'admin@campusfix.edu', 'admin123', 'admin');
-const staff1Id = upsertUser('Ramesh (Electrician)', 'staff1@campusfix.edu', 'staff123', 'staff');
-const staff2Id = upsertUser('Suresh (Plumber)', 'staff2@campusfix.edu', 'staff123', 'staff');
+const staff1Id = upsertUser('Ramesh (Electrician)', 'ramesh@campusfix.edu', 'ramesh123', 'staff');
+const staff2Id = upsertUser('Suresh (Plumber)', 'suresh@campusfix.edu', 'suresh123', 'staff');
+const staff3Id = upsertUser('Vikram (Furniture)', 'vikram@campusfix.edu', 'vikram123', 'staff');
+const staff4Id = upsertUser('Anil (Technical)', 'anil@campusfix.edu', 'anil123', 'staff');
 const studentId = upsertUser('Demo Student', 'student@campusfix.edu', 'student123', 'student');
 
 // Add one sample complaint so the dashboards aren't empty on first run
@@ -44,7 +46,9 @@ if (!existingComplaint) {
 
 console.log('\nDone! You can log in with:');
 console.log('  Admin  -> admin@campusfix.edu   / admin123');
-console.log('  Staff  -> staff1@campusfix.edu  / staff123');
-console.log('  Staff  -> staff2@campusfix.edu  / staff123');
+console.log('  Staff  -> ramesh@campusfix.edu  / ramesh123');
+console.log('  Staff  -> suresh@campusfix.edu  / suresh123');
+console.log('  Staff  -> vikram@campusfix.edu  / vikram123');
+console.log('  Staff  -> anil@campusfix.edu    / anil123');
 console.log('  Student-> student@campusfix.edu / student123');
 console.log('(or register a new student account from the login page)');
