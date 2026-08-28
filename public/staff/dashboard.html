@@ -27,9 +27,12 @@
 
   <script src="/js/api.js"></script>
   <script>
+    // First line of defense: make sure only staff members can access this page. If not, they get booted to login.
     const user = guard('staff');
+    // Personalize the topbar with the staff member's name.
     document.getElementById('userName').textContent = user.name;
 
+    // Fetches all the complaints currently assigned to this staff member and renders them.
     async function load() {
       const list = document.getElementById('list');
       try {
@@ -45,6 +48,7 @@
       }
     }
 
+    // Takes a raw complaint object and turns it into a neat, blueprint-style ticket card.
     function renderTicket(c) {
       const statusClass = c.status.replace(' ', '-');
       return `
@@ -88,6 +92,7 @@
       `;
     }
 
+    // Hooks up the status dropdowns and "Mark Resolved" buttons on the newly rendered tickets so they actually update the backend.
     function wireActions() {
       document.querySelectorAll('.status-select').forEach(sel => {
         sel.addEventListener('change', async () => {

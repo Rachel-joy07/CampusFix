@@ -36,7 +36,7 @@
 
   <script src="/js/api.js"></script>
   <script>
-    // If already logged in, skip straight to the right dashboard
+    // A quick check right when the page loads: if you're already logged in, there's no need to see this page. We'll bounce you straight to your dashboard.
     (function () {
       const user = getUser();
       if (user && getToken()) window.location.href = `/${user.role}/dashboard.html`;
@@ -45,6 +45,7 @@
     const form = document.getElementById('loginForm');
     const msg = document.getElementById('msg');
 
+    // This is where the magic happens when you click 'Log in'. We stop the page from refreshing, grab the credentials, and ask the backend if they're valid.
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       showMsg(msg, '');

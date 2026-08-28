@@ -54,11 +54,13 @@
 
   <script src="/js/api.js"></script>
   <script>
+    // First line of defense: if you aren't an admin, our 'guard' function will immediately kick you out of this page before anything else loads.
     const user = guard('admin');
     document.getElementById('userName').textContent = user.name;
 
     let staffList = [];
 
+    // We hit the backend stats endpoint to pull the latest aggregate data. This makes sure the numbers at the top of the dashboard are always fresh.
     async function loadStats() {
       const { total, byStatus, byPriority, avgRating } = await api('/admin/stats');
       const resolved = (byStatus.find(s => s.status === 'Resolved') || {}).n || 0;
@@ -76,6 +78,7 @@
       staffList = staff;
     }
 
+    // This is responsible for fetching the main list of complaints based on whatever filters the admin has currently selected in the dropdowns above.
     async function loadList() {
       const list = document.getElementById('list');
       const params = new URLSearchParams();
@@ -139,6 +142,7 @@
       `;
     }
 
+    // After we render the list of complaints, we need to attach event listeners to the "Assign to staff" dropdowns so they actually fire off updates when changed.
     function wireActions() {
       document.querySelectorAll('.assign-select').forEach(sel => {
         sel.addEventListener('change', async () => {

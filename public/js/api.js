@@ -11,6 +11,7 @@ function getUser() {
   const raw = localStorage.getItem('cf_user');
   return raw ? JSON.parse(raw) : null;
 }
+// A simple helper to stash the user's login token and details in localStorage so they don't lose their session if they refresh the tab.
 function setSession(token, user) {
   localStorage.setItem('cf_token', token);
   localStorage.setItem('cf_user', JSON.stringify(user));
@@ -20,8 +21,7 @@ function clearSession() {
   localStorage.removeItem('cf_user');
 }
 
-// Redirects to the login page unless the user is logged in and, if a role
-// is given, has that exact role. Call at the top of every protected page.
+// This function acts like a bouncer for our frontend pages. It kicks you back to the login screen if you aren't authenticated or if you don't have the right role (like trying to access the admin panel as a student).
 function guard(requiredRole) {
   const user = getUser();
   if (!user || !getToken()) {
@@ -40,7 +40,7 @@ function logout() {
   window.location.href = '/index.html';
 }
 
-// Generic JSON request helper
+// This is our central workhorse for talking to the backend. It automatically attaches your auth token to every request and handles JSON parsing so we don't have to repeat this logic everywhere.
 async function api(path, { method = 'GET', body = null, isForm = false } = {}) {
   const headers = {};
   const token = getToken();

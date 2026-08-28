@@ -41,6 +41,7 @@
     const form = document.getElementById('regForm');
     const msg = document.getElementById('msg');
 
+    // When a new student signs up, we intercept the form submission, grab their details, and send a POST request to the backend to create their account.
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       showMsg(msg, '');
