@@ -1,3 +1,12 @@
+/*
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This utility file provides reusable functions for the application's notification system.
+It handles the logic for creating and dispatching alerts to users regarding complaint status changes.
+These functions can be imported across different route handlers to consistently trigger notifications.
+*/
 // utils/notify.js - small helpers to push in-app notifications
 const db = require('../db');
 

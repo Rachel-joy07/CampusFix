@@ -1,3 +1,12 @@
+/*
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This file is responsible for establishing and configuring the connection to the SQLite database.
+It initializes the database instance and exports it for use throughout the application's backend.
+It serves as the central point for executing SQL queries and managing data persistence.
+*/
 // db.js - Database connection and schema setup
 // Uses Node's BUILT-IN node:sqlite module (Node 22+) — a synchronous,
 // file-based SQLite driver that ships with Node itself, so there is no

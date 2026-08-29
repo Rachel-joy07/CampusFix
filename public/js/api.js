@@ -1,3 +1,12 @@
+/*
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This file serves as the central frontend JavaScript module for handling backend API communications.
+It encapsulates all fetch requests, including authentication headers, to seamlessly interact with the server.
+It provides reusable functions for fetching data, submitting forms, and handling API errors gracefully.
+*/
 // api.js - tiny fetch wrapper shared by every page.
 // Stores the JWT + user object in memory-safe localStorage (fine for a
 // college demo project running on localhost).

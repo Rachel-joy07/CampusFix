@@ -1,11 +1,22 @@
+<!--
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This is the main entry point HTML file and serves as the login page for the application.
+It provides the authentication form for all user types (students, staff, and admins) to access the system.
+If a user is already authenticated, the page automatically redirects them to their respective dashboard.
+-->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CampusFix — Log in</title>
-<link rel="stylesheet" href="/css/style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusFix — Log in</title>
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
+
 <body>
   <div class="auth-wrap">
     <div class="auth-card">
@@ -36,7 +47,7 @@
 
   <script src="/js/api.js"></script>
   <script>
-    // A quick check right when the page loads: if you're already logged in, there's no need to see this page. We'll bounce you straight to your dashboard.
+    //Check right when the page loads: if you're already logged in, there's no need to see this page. We'll bounce you straight to your dashboard.
     (function () {
       const user = getUser();
       if (user && getToken()) window.location.href = `/${user.role}/dashboard.html`;
@@ -45,7 +56,7 @@
     const form = document.getElementById('loginForm');
     const msg = document.getElementById('msg');
 
-    // This is where the magic happens when you click 'Log in'. We stop the page from refreshing, grab the credentials, and ask the backend if they're valid.
+    // When you click 'Log in'. We stop the page from refreshing, grab the credentials, and ask the backend if they're valid.
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       showMsg(msg, '');
@@ -62,4 +73,5 @@
     });
   </script>
 </body>
+
 </html>

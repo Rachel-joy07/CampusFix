@@ -1,3 +1,12 @@
+/*
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This is the main entry point script that configures and launches the Express backend server.
+It sets up middleware for JSON parsing, static file serving, and registers all the API route modules.
+It binds the application to a specified network port, allowing it to listen for incoming HTTP requests.
+*/
 // server.js - CampusFix backend entry point
 require('dotenv').config();
 const express = require('express');
@@ -9,6 +18,7 @@ const studentRoutes = require('./routes/student');
 const adminRoutes = require('./routes/admin');
 const staffRoutes = require('./routes/staff');
 
+//Loads environment variables and parses incoming JSON data.
 const app = express();
 const PORT = process.env.PORT || 4000;
 

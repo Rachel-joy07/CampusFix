@@ -1,3 +1,12 @@
+/*
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This file contains the Express routes tailored for staff member functionalities.
+It provides endpoints for staff to retrieve their assigned complaints and update their task statuses.
+Access to these routes is strictly limited to authenticated users with the staff role designation.
+*/
 // routes/staff.js - Staff-facing endpoints
 const express = require('express');
 const db = require('../db');

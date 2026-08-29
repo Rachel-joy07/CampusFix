@@ -1,3 +1,12 @@
+/*
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This file defines the Express routing endpoints specifically for administrator operations.
+It includes routes for fetching all system complaints, assigning tasks to staff, and managing users.
+The endpoints in this file are protected by role-based middleware to ensure only admins can access them.
+*/
 // routes/admin.js - Admin-facing endpoints
 const express = require('express');
 const db = require('../db');

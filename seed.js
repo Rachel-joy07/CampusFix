@@ -1,3 +1,12 @@
+/*
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This script is used to initialize the database with predefined seed data for development and testing.
+It creates the necessary tables and inserts default users, such as initial admin and staff accounts.
+Running this file helps set up a fresh database environment quickly with reliable dummy data.
+*/
 // seed.js - Creates the initial Admin + Staff logins (and a demo student + complaint)
 // Run once with: npm run seed
 const bcrypt = require('bcryptjs');

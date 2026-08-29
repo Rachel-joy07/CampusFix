@@ -1,3 +1,12 @@
+/*
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This file contains authentication and authorization middleware functions.
+It verifies JSON Web Tokens (JWT) to ensure users are authenticated before accessing protected routes.
+It also includes role-based access control to restrict endpoints to specific user types like admins, staff, or students.
+*/
 // middleware/auth.js - JWT auth + role-based access control
 const jwt = require('jsonwebtoken');
 

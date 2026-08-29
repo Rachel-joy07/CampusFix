@@ -1,3 +1,12 @@
+/*
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This file defines the Express API routes for student-facing features and operations.
+It handles endpoints for submitting new complaints, including file uploads for images, and retrieving complaint history.
+The routes ensure that students can only access and interact with their own submitted data.
+*/
 // routes/student.js - Student-facing endpoints
 const express = require('express');
 const multer = require('multer');
@@ -8,9 +17,8 @@ const { notifyAllAdmins } = require('../utils/notify');
 
 const router = express.Router();
 
-// --- Image upload config -------------------------------------------------
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, '..', 'uploads')),
+//Image upload config
+destination: (req, file, cb) => cb(null, path.join(__dirname, '..', 'uploads')),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     cb(null, `complaint_${Date.now()}${ext}`);

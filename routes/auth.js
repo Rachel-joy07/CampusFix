@@ -1,3 +1,12 @@
+/*
+Authors:2462148-Sheryn Anand
+                2462106-Kuragayala Rachel
+Duration: 20/08/2026-27/08/2026
+Description: 
+This file handles the backend routing for user authentication and authorization processes.
+It includes the endpoints for user registration, login verification, and JSON Web Token (JWT) generation.
+These routes are essential for securing the application and managing user sessions across the platform.
+*/
 // routes/auth.js - Registration, login, and "who am I" endpoints
 const express = require('express');
 const bcrypt = require('bcryptjs');
